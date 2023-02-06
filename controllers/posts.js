@@ -99,5 +99,5 @@ export {
   deletePost as delete,
   updatePost as update,
   createLike,
-  deleteComment,
+  
 }
