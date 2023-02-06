@@ -61,6 +61,25 @@ async function deletePost(req, res) {
   }
 }
 
+async function deleteComment(req, res) {
+  try {
+    const post = await Post.findById(req.params.id)
+    if (post.comments.author.equals(req.user.profile)) {
+      await Post.findByIdAndDelete(req.params.id)
+      const profile = await Profile.findById(req.user.profile)
+      profile.comments.remove({_id: req.params.id})
+      await profile.save()
+      res.status(200).json(post)
+    } else {
+      throw new Error('Not Authorized')
+    }
+  } catch (error) {
+    res.status(500).json(error)
+  }
+}
+
+
+
 async function updatePost(req, res) {
   try {
     const post = await Post.findByIdAndUpdate(
@@ -95,5 +114,6 @@ export {
   createComment,
   deletePost as delete,
   updatePost as update,
-  createLike
+  createLike,
+  deleteComment,
 }
